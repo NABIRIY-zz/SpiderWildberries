@@ -41,6 +41,5 @@ class Spudi(scrapy.Spider):
                     '__description': None,
                 },
             }
-            if next_page <= 1:
-                next_page += 1
-                yield scrapy.Request(self.base_url % 2)
+            next_page += 1
+            yield scrapy.Request(self.base_url % 2)
