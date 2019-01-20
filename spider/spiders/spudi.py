@@ -4,12 +4,12 @@ import getters as get
 
 class Spudi(scrapy.Spider):
     name = "spudi"
-    base_url = 'https://www.wildberries.ru/catalog/obuv/zhenskaya/sabo-i-myuli/myuli?page=%s'
+    base_url = 'https://www.wildberries.ru/catalog/obuv/zhenskaya/tufli-lofery/lodochki?page=%s'
     start_urls = [base_url % 1]
-
+    k = 0
+    page = 1
     def parse(self, response):
-        k = 0
-        page = 3
+        
         for i in response.css('div.dtList'):
             yield {
                 # '': i.css('').extract_first(),
@@ -41,8 +41,7 @@ class Spudi(scrapy.Spider):
                     '__description': None,
                 },
             }
-            k += 1
-            if k % 100 == 0:
-                k = 0
-                page += 1
-                yield scrapy.Request(self.base_url % page)
+            self.k += 1
+            if self.k % 100 == 0:
+                self.page += 1
+                yield scrapy.Request(self.base_url % self.page)
