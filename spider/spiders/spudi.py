@@ -1,4 +1,6 @@
 import scrapy
+import getters as get
+
 
 class Spudi(scrapy.Spider):
     name = "spudi"
@@ -7,6 +9,7 @@ class Spudi(scrapy.Spider):
 
     def parse(self, response):
         next_page = 0
+        page = 1
         for i in response.css('div.dtList'):
             size = False
             if (i.css('span.sizes').extract_first != None):
@@ -20,26 +23,28 @@ class Spudi(scrapy.Spider):
                 'marketing_tags': None,
                 'brand': i.css('strong.brand-name::text').extract_first(),
                 'selection': response.css('div.breadcrumbs span::text').extract(),
-                'price_data': 
+                'price_data':
                 {
-                    'current': i.css('del::text').extract_first(),
-                    'origina': i.css('ins.lower-price::text').extract_first(),
-                    'sale_tag': i.css('span.price-sale.active::text').extract_first(),
+                    'current': get.CurrentPrice(i),
+                    'original': get.OriginalPrice(i),
+                    'sale_tag': get.Sale(i),
                 },
-                
+
                 'stock':
                 {
-                    'in_stock': size,   
+                    'in_stock': size,
                 },
                 'assets':
                 {
-                    'main_image': i.css('div.l_class img::attr(data-original)').extract_first(),
+                    'main_image': i.css('img.thumbnail::attr(src)').extract_first(),
                     'set_images': None,
                 },
-                'metadata': 
+                'metadata':
                 {
                     '__description': None,
                 },
             }
             next_page += 1
-            yield scrapy.Request(self.base_url % next_page)
+            if next_page % 100 == 0:
+                page += 1
+                yield scrapy.Request(self.base_url % page)
