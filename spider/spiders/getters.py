@@ -15,3 +15,9 @@ def Sale(i):
         return "0%"
     else:
         return i.css('span.price-sale.active::text').extract_first()
+
+def Size(i):
+    if (i.css('span.sizes').extract_first != None):
+        return True
+    else:
+        return False

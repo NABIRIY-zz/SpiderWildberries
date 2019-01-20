@@ -11,9 +11,6 @@ class Spudi(scrapy.Spider):
         next_page = 0
         page = 1
         for i in response.css('div.dtList'):
-            size = False
-            if (i.css('span.sizes').extract_first != None):
-                size = True
             yield {
                 # '': i.css('').extract_first(),
                 'timestamp': None,
@@ -32,7 +29,7 @@ class Spudi(scrapy.Spider):
 
                 'stock':
                 {
-                    'in_stock': size,
+                    'in_stock': get.Size,
                 },
                 'assets':
                 {
