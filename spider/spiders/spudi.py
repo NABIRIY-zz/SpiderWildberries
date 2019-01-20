@@ -8,8 +8,8 @@ class Spudi(scrapy.Spider):
     start_urls = [base_url % 1]
 
     def parse(self, response):
-        next_page = 0
-        page = 1
+        k = 0
+        page = 3
         for i in response.css('div.dtList'):
             yield {
                 # '': i.css('').extract_first(),
@@ -29,7 +29,7 @@ class Spudi(scrapy.Spider):
 
                 'stock':
                 {
-                    'in_stock': get.Size,
+                    'in_stock': get.Size(i),
                 },
                 'assets':
                 {
@@ -41,7 +41,8 @@ class Spudi(scrapy.Spider):
                     '__description': None,
                 },
             }
-            next_page += 1
-            if next_page % 100 == 0:
+            k += 1
+            if k % 100 == 0:
+                k = 0
                 page += 1
                 yield scrapy.Request(self.base_url % page)
