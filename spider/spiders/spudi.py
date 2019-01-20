@@ -2,10 +2,11 @@ import scrapy
 
 class Spudi(scrapy.Spider):
     name = "spudi"
-    start_urls = ['https://www.wildberries.ru/catalog/obuv/zhenskaya/sabo-i-myuli/myuli',
-                'https://www.wildberries.ru/catalog/obuv/zhenskaya/sabo-i-myuli/myuli?page=2']
+    base_url = 'https://www.wildberries.ru/catalog/obuv/zhenskaya/sabo-i-myuli/myuli?page=%s'
+    start_urls = [base_url % 1]
 
     def parse(self, response):
+        next_page = 0
         for i in response.css('div.dtList'):
             size = False
             if (i.css('span.sizes').extract_first != None):
@@ -40,3 +41,6 @@ class Spudi(scrapy.Spider):
                     '__description': None,
                 },
             }
+            if next_page <= 1:
+                next_page += 1
+                yield scrapy.Request(self.base_url % 2)
